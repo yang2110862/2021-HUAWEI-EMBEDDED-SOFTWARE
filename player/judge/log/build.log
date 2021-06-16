@@ -1,0 +1,3 @@
+build.sh: line 13: cmake: command not found
+ERROR: You should install cmake(2.8 or later) first.
+  Please goto https://cmake.org to download and install it.

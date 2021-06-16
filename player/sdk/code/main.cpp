@@ -4,29 +4,14 @@
 #include "data.h"
 
 using namespace std;
-class Init {
-    vector<Route> Process(uint32_t N, uint32_t C, uint32_t D, uint32_t PS,
-                       const vector<bool>& typeVec, const vector<Edge>& edgeVec) {
-        
-    }
-};
 class Solution {
 public:
     vector<Route> Plan(uint32_t N, uint32_t C, uint32_t D, uint32_t PS,
                        const vector<bool>& typeVec, const vector<Edge>& edgeVec)
     {
         vector<Route> retRouteVec;
-
-        // ***建议选手在这里加入自己的处理代码***
-
-        // 结果输出到retRouteVec中，如下面6行，每行输出一条路径：
-        // retRouteVec.push_back({5, 2, 0});
-        // retRouteVec.push_back({6, 2, 0});
-        // retRouteVec.push_back({7, 3, 2, 0});
-        // retRouteVec.push_back({8, 3, 2, 0});
-        // retRouteVec.push_back({9, 4, 3, 1});
-        // retRouteVec.push_back({10, 4, 3, 1});
-
+        Init initi;
+        retRouteVec = initi.Process(N, C, D, PS, typeVec, edgeVec);
         return retRouteVec;
     }
 };
