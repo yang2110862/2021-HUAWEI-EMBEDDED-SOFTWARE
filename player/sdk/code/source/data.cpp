@@ -1,7 +1,7 @@
 #include "data.h"
 
 unordered_map<int, ListNode*> numToSatellite;
-vector<int> satellite;
+vector<int> base_station;
 void Init::Creat_map(uint32_t N) {
     for (int i = 0; i < N; ++i) {      
         ListNode* node = new ListNode;
@@ -14,7 +14,7 @@ void Init::Init_list(uint32_t N, uint32_t E, const vector<bool>& typeVec, const 
     Creat_map(N);
     for (int i = 0; i < N; ++i) {
         numToSatellite[i]->isSatellite = typeVec[i];
-        if (!typeVec[i]) satellite.push_back(i);
+        if (!typeVec[i]) base_station.push_back(i);
     }
     for (int i = 0; i < E; ++i) {
         int send = edgeVec[i].send;
@@ -33,8 +33,8 @@ vector<Route> Init::Process(uint32_t N, uint32_t C, uint32_t D, uint32_t PS,
     uint32_t E = edgeVec.size();
     Init_list(N, E, typeVec, edgeVec);
     vector<Route> sol;
-    for (int i = 0; i < satellite.size(); ++i) {
-        Route temp = {satellite[i], numToSatellite[satellite[i]]->next[0]->num};
+    for (int i = 0; i < base_station.size(); ++i) {
+        Route temp = {base_station[i], numToSatellite[base_station[i]]->next[0]->num};
         sol.emplace_back(temp);
     }
     return sol;
