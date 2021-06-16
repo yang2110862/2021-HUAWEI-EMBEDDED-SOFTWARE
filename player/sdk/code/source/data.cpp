@@ -34,7 +34,17 @@ vector<Route> Init::Process(uint32_t N, uint32_t C, uint32_t D, uint32_t PS,
     Init_list(N, E, typeVec, edgeVec);
     vector<Route> sol;
     for (int i = 0; i < base_station.size(); ++i) {
-        Route temp = {base_station[i], numToSatellite[base_station[i]]->next[0]->num};
+        int min_dist = INT_MAX;
+        int num;
+        auto base = numToSatellite[base_station[i]];
+        for (auto x : base->dist) {
+            if (x.second < min_dist) {
+                min_dist = x.second;
+                num = x.first;
+            }
+        }
+        Route temp = {base_station[i], num};
+        // Route temp = {base_station[i], numToSatellite[base_station[i]]->next[0]->num};
         sol.emplace_back(temp);
     }
     return sol;
