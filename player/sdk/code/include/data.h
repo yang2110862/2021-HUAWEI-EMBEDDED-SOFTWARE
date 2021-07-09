@@ -3,84 +3,78 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <map>
+#include <unordered_map>
 using namespace std;
 
-struct Edge {
-    uint32_t send;  // 发送站点
-    uint32_t recv;  // 接受站点
-    uint32_t dist;  // 距离
-};
+// struct Edge {
+//     uint32_t send;  // 发送站点
+//     uint32_t recv;  // 接受站点
+//     uint32_t dist;  // 距离
+// };
 
 using Route = vector<uint32_t>;
-
-//顶点
-class Vertex {
-public:
+class Node {
+private:
     int num;
-};
-//邻接表表示
-class Graph {
-private:
-    int v;
-    int e;
-    vector<set<int>> adj; //是否要用set
+    bool Satellite;
 public:
-    Graph(int v);
-    Graph(iostream& in);
-    int V();
-    int E();
-    void add_edge(int v, int w);
-    vector<Vertex*> adj(int v);
-    string to_string();
-};
-//图处理算法
-class Search {
-public:
-    Search(Graph G,int s);//找到和起点s相连的所有顶点
-    bool marked(int v); //v和s是连通的吗
-    int count(); //与s连通的顶点总数
-};
-//dfs（解决连通性问题以及单点路径问题）
-class DepthFirstSearch {
-private:
-    vector<int> marked;
-    int count;
-    void dfs(Graph G, int s);
-public:
-    DepthFirstSearch(Graph G, int s); //找到和起点s相连的所有顶点
-    bool marked(int w) {    //v和s是连通的吗
-        return marked[w];
-    }
-    int count() {return count;}; //与s连通的顶点总数
-};
-//使用dfs搜索查找图中的路径
-class DepthFirstPaths {
-private:
-    vector<int> marked;
-    vector<int> edge_to;
-    int s;
-    void dfs(Graph G, int s);
-public:
-    DepthFirstPaths(Graph G, int s); //找到和起点s相连的所有顶点
-    bool has_path_to(int v);
-    vector<int> path_to(int v);
-};
-class Paths {
-public:
-    Paths(Graph G, int s);      //在G中找出所有起点为s的路径
-    bool has_path_to(int v); //是否存在从s到v的路径
-    vector<int> path_to(int v); //s到v的路径，如果不存在返回空
+    Node(int num, bool flag) : num(num), Satellite(flag) {}
+    int getNum() {return num;}
+    bool isSatellite() {return Satellite;}
 };
 
-//bfs （找最短路径）
-class BreadthFirstPaths {
+
+/*该数据结构提供了either()和other()两个方法。在已知一个顶点v时，用例可以使用other(v)来得到
+边的另一个顶点。当两个顶点都是未知的时候，用例可以使用惯用代码v = e.ther(), w = e.other(v);
+来访问一个Edge对象e的两个顶点。*/
+class Edge {
 private:
-    vector<int> marked;
-    vector<int> edgeTo;
-    int s;
-    void bfs(Graph G, int s);
+    int v;//顶点之一
+    int w;//另一个顶点
+    int weight;//边的权重
 public:
-    BreadthFirstPaths(Graph G, int s);
-    bool has_path_to(int v);
-    vector<int> path_to(int v);
+    Edge(int v, int w, int weigh) {
+        this->v = v;
+        this->w = w;
+        this->weight = weigh;
+    }
+    int either() {return v;}
+    int other(int vertex) {
+        if (vertex == v) return w;
+        else if (vertex == w) return v;
+        else throw domain_error("logc error : The result value corresponding to the parameter does not exist");
+    }
+    int compareTo(Edge* that) {
+        if (this->weight < that->weight) return -1;
+        else if (this->weight > that->weight) return 1;
+        else return 0;
+    }
+};
+
+class EdgeWeightedGraph {
+public:
+    int V;//顶点总数
+    int E;//边的总数
+    vector<set<int>> adj;//邻接表
+    unordered_map<int, Node*> mp;//索引->节点
+public:
+    EdgeWeightedGraph(int N, int E, vector<Edge*>& edgeVec, vector<bool>& typeVce) { 
+        this->V = N;
+        this->E = E;
+        adj.resize(N);
+        for (int v = 0; v < V; ++v) {
+            Node* node = new Node(v, typeVce[v]);
+            mp[v] = node;
+        }
+        for (auto edge : edgeVec) {
+            int v = edge->either(), w = edge->other(v);
+            adj[v].insert(w);
+            adj[w].insert(v);
+        }
+    }
+    Node* getNode(int index) {
+        if (mp.count(index)) return mp[index];
+        else throw range_error("out of range");
+    }
 };

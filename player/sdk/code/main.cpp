@@ -8,7 +8,7 @@ using namespace std;
 class Solution {
 public:
     vector<Route> Plan(uint32_t N, uint32_t C, uint32_t D, uint32_t PS,
-                       const vector<bool>& typeVec, const vector<Edge>& edgeVec)
+                       const vector<bool>& typeVec, const vector<Edge*>& edgeVec)
     {
         vector<Route> retRouteVec;
 
@@ -34,7 +34,8 @@ int main(int argc, char *argv[])
     uint32_t D;             // 表示全网最大路径长度限制。
     uint32_t PS;            // 表示接收卫星所需要的站点功耗
     vector<bool> typeVec;   // 下标为i的值代表ID为i的站点身份，卫星为true，发射基站为false
-    vector<Edge> edgeVec;   // 包含E条边
+    // vector<Edge> edgeVec;   // 包含E条边
+    vector<Edge*> edgeVec;
 
     cin >> N >> E >> C >> D >> PS;
     typeVec = vector<bool>(N);
@@ -43,11 +44,16 @@ int main(int argc, char *argv[])
         cin >> type;
         typeVec[i] = type;
     }
-    edgeVec = vector<Edge>(E);
-    for (auto& edge : edgeVec) {
-        cin >> edge.send >> edge.recv >> edge.dist;
+    // edgeVec = vector<Edge>(E);
+    // for (auto& edge : edgeVec) {
+    //     cin >> edge.v >> edge.w >> edge.weight;
+    // }
+    for (int i = 0; i < E; ++i) {
+        int v, w, weight;
+        cin >> v >> w >> weight;
+        edgeVec.push_back(new Edge(v, w, weight));
     }
-
+    
     Solution solution;
     vector<Route> retRouteVec = solution.Plan(N, C, D, PS, typeVec, edgeVec);
     for (const auto& route : retRouteVec) {
