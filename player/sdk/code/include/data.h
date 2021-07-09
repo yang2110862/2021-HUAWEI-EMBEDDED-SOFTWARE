@@ -53,19 +53,23 @@ public:
 };
 
 class EdgeWeightedGraph {
-public:
+private:
     int V;//顶点总数
     int E;//边的总数
     vector<set<int>> adj;//邻接表
     unordered_map<int, Node*> mp;//索引->节点
+    vector<int> base;
+    vector<int> satellite;
 public:
-    EdgeWeightedGraph(int N, int E, vector<Edge*>& edgeVec, vector<bool>& typeVce) { 
+    EdgeWeightedGraph(int N, int E, const vector<Edge*>& edgeVec, const vector<bool>& typeVce) { 
         this->V = N;
         this->E = E;
         adj.resize(N);
         for (int v = 0; v < V; ++v) {
             Node* node = new Node(v, typeVce[v]);
             mp[v] = node;
+            if (typeVce[v]) satellite.push_back(v);
+            else base.push_back(v);
         }
         for (auto edge : edgeVec) {
             int v = edge->either(), w = edge->other(v);
@@ -77,4 +81,7 @@ public:
         if (mp.count(index)) return mp[index];
         else throw range_error("out of range");
     }
+    set<int> getAdj(int v) {return adj[v];}
+    vector<int> getBaseSet() {return base;}
+    vector<int> getSatellitSet() {return satellite;}
 };

@@ -7,21 +7,19 @@ using namespace std;
 
 class Solution {
 public:
-    vector<Route> Plan(uint32_t N, uint32_t C, uint32_t D, uint32_t PS,
+    vector<Route> Plan(uint32_t N, uint32_t E, uint32_t C, uint32_t D, uint32_t PS,
                        const vector<bool>& typeVec, const vector<Edge*>& edgeVec)
     {
         vector<Route> retRouteVec;
-
-        // ***建议选手在这里加入自己的处理代码***
-
-        // 结果输出到retRouteVec中，如下面6行，每行输出一条路径：
-        // retRouteVec.push_back({5, 2, 0});
-        // retRouteVec.push_back({6, 2, 0});
-        // retRouteVec.push_back({7, 3, 2, 0});
-        // retRouteVec.push_back({8, 3, 2, 0});
-        // retRouteVec.push_back({9, 4, 3, 1});
-        // retRouteVec.push_back({10, 4, 3, 1});
-
+        EdgeWeightedGraph G(N, E, edgeVec, typeVec);
+        vector<int> baseSet = G.getBaseSet();
+        vector<int> satelliteSet = G.getSatellitSet();
+        for (int base : baseSet) {
+            Route temp;
+            temp.push_back(base);
+            temp.push_back(*G.getAdj(base).begin());
+            retRouteVec.push_back(temp);
+        }
         return retRouteVec;
     }
 };
@@ -55,7 +53,7 @@ int main(int argc, char *argv[])
     }
     
     Solution solution;
-    vector<Route> retRouteVec = solution.Plan(N, C, D, PS, typeVec, edgeVec);
+    vector<Route> retRouteVec = solution.Plan(N, E, C, D, PS, typeVec, edgeVec);
     for (const auto& route : retRouteVec) {
         for (const auto& siteId : route) {
             cout << siteId << " ";
