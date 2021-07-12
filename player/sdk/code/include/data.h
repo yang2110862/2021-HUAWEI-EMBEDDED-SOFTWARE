@@ -32,8 +32,8 @@ private:
     int weight;//边的权重
 public:
     Edge(int v, int w, int weigh);
-    int either() {return v;}
-    int other(int vertex);
+    int either() {return v;}  //返回边的一个点
+    int other(int vertex);//返回边中不是vertex的另一个点
     int getWeight() {return weight;}
     int compareTo(Edge* that);
 };
