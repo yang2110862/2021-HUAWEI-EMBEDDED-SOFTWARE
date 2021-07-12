@@ -1,3 +1,4 @@
+#pragma once
 #include "data.h"
 #include "myHeap.h"
 //最短路径的Dijkstra算法

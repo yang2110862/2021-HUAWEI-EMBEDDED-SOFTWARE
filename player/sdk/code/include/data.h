@@ -31,23 +31,11 @@ private:
     int w;//另一个顶点
     int weight;//边的权重
 public:
-    Edge(int v, int w, int weigh) {
-        this->v = v;
-        this->w = w;
-        this->weight = weigh;
-    }
+    Edge(int v, int w, int weigh);
     int either() {return v;}
-    int other(int vertex) {
-        if (vertex == v) return w;
-        else if (vertex == w) return v;
-        else throw domain_error("logic error : The result value corresponding to the parameter does not exist");
-    }
+    int other(int vertex);
     int getWeight() {return weight;}
-    int compareTo(Edge* that) {
-        if (this->weight < that->weight) return -1;
-        else if (this->weight > that->weight) return 1;
-        else return 0;
-    }
+    int compareTo(Edge* that);
 };
 
 class EdgeWeightedGraph {
@@ -59,22 +47,8 @@ private:
     vector<int> base;
     vector<int> satellite;
 public:
-    EdgeWeightedGraph(int N, int E, const vector<Edge*>& edgeVec, const vector<bool>& typeVce) { 
-        this->V = N;
-        this->E = E;
-        adj.resize(N);
-        for (int v = 0; v < V; ++v) {
-            Node* node = new Node(v, typeVce[v]);
-            mp[v] = node;
-            if (typeVce[v]) satellite.push_back(v);
-            else base.push_back(v);
-        }
-        for (auto edge : edgeVec) {
-            int v = edge->either(), w = edge->other(v);
-            adj[v].insert(edge);
-            adj[w].insert(edge);
-        }
-    }
+    EdgeWeightedGraph(int N, int E, const vector<Edge*>& edgeVec, 
+        const vector<bool>& typeVce);
     Node* getNode(int index) {
         if (mp.count(index)) return mp[index];
         else throw range_error("out of range");
