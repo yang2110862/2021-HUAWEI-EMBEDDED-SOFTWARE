@@ -17,13 +17,12 @@ public:
         for (int base : baseSet) {
             Route temp;
             temp.push_back(base);
-            temp.push_back(*G.getAdj(base).begin());
+            temp.push_back(const_cast<Edge*>(*G.getAdj(base).begin())->other(base));
             retRouteVec.push_back(temp);
         }
         return retRouteVec;
     }
 };
-
 int main(int argc, char *argv[])
 {
     uint32_t N;             // 表示所有卫星和发射基站的总数
@@ -42,10 +41,6 @@ int main(int argc, char *argv[])
         cin >> type;
         typeVec[i] = type;
     }
-    // edgeVec = vector<Edge>(E);
-    // for (auto& edge : edgeVec) {
-    //     cin >> edge.v >> edge.w >> edge.weight;
-    // }
     for (int i = 0; i < E; ++i) {
         int v, w, weight;
         cin >> v >> w >> weight;

@@ -1,16 +1,17 @@
 #include <iostream>
+#include <queue>
+#include <set>
+#include <vector>
 using namespace std;
 class Node {
-private:
+public:
     int x;
 public:
-    int get_x() {return x + 1;}
+    int get_x() {return x;}
     Node() = default;
-    Node(int x) : x(x + 1) {};
+    Node(int x) : x(x) {};
 };
-
 int main() {
-    Node* node = new Node(3);
-    cout << node->get_x();
+    
     return 0;
 }

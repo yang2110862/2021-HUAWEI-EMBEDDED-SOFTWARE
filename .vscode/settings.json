@@ -3,6 +3,11 @@
         "string": "cpp",
         "iosfwd": "cpp",
         "vector": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "queue": "cpp",
+        "xstddef": "cpp",
+        "unordered_set": "cpp",
+        "iostream": "cpp",
+        "xstring": "cpp"
     }
 }

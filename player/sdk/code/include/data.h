@@ -5,13 +5,9 @@
 #include <set>
 #include <map>
 #include <unordered_map>
+#include <climits>
+#include <queue>
 using namespace std;
-
-// struct Edge {
-//     uint32_t send;  // 发送站点
-//     uint32_t recv;  // 接受站点
-//     uint32_t dist;  // 距离
-// };
 
 using Route = vector<uint32_t>;
 class Node {
@@ -43,8 +39,9 @@ public:
     int other(int vertex) {
         if (vertex == v) return w;
         else if (vertex == w) return v;
-        else throw domain_error("logc error : The result value corresponding to the parameter does not exist");
+        else throw domain_error("logic error : The result value corresponding to the parameter does not exist");
     }
+    int getWeight() {return weight;}
     int compareTo(Edge* that) {
         if (this->weight < that->weight) return -1;
         else if (this->weight > that->weight) return 1;
@@ -56,7 +53,7 @@ class EdgeWeightedGraph {
 private:
     int V;//顶点总数
     int E;//边的总数
-    vector<set<int>> adj;//邻接表
+    vector<set<Edge*>> adj;//邻接表
     unordered_map<int, Node*> mp;//索引->节点
     vector<int> base;
     vector<int> satellite;
@@ -73,15 +70,55 @@ public:
         }
         for (auto edge : edgeVec) {
             int v = edge->either(), w = edge->other(v);
-            adj[v].insert(w);
-            adj[w].insert(v);
+            adj[v].insert(edge);
+            adj[w].insert(edge);
         }
     }
     Node* getNode(int index) {
         if (mp.count(index)) return mp[index];
         else throw range_error("out of range");
     }
-    set<int> getAdj(int v) {return adj[v];}
+    set<Edge*> getAdj(int v) {return adj[v];}
+    int getV() {return V;}
+    int getE() {return E;}
     vector<int> getBaseSet() {return base;}
     vector<int> getSatellitSet() {return satellite;}
+};
+
+//最短路径的Dijkstra算法
+class DijkstraSP {
+private:
+    struct cmp_edge_dist{
+        
+    };
+private:
+    vector<Edge*> edgeTo; //由顶点索引的Edge对象的数组，其中edgeTo[v]为连接v和它的父节点的边
+    vector<int> distTo; //distTo[w]是从s到w的最短路径的长度
+    priority_queue<pair<int, int>, vector<pair<int, int>>, 
+        greater<pair<int ,int>>> pq;
+    void relax(EdgeWeightedGraph G, int v) {
+        for (Edge* e : G.getAdj(v)) {
+            int w = e->other(v);
+            if (distTo[w] > distTo[v] + e->getWeight()) {
+                distTo[w] = distTo[v] + e->getWeight();
+                edgeTo[w] = e;
+                // if (pq.)
+            }
+        }
+    }
+public:
+    DijkstraSP(EdgeWeightedGraph G, int s) {
+        edgeTo.resize(G.getV());
+        distTo.resize(G.getV());
+        for (int v = 0; v < G.getV(); ++v) {
+            distTo[v] = INT_MAX;
+        }
+        distTo[s] = 0;
+        pq.push(make_pair(0, s));
+        while (!pq.empty()) {
+            auto temp = pq.top();
+            pq.pop();
+            relax(G, temp.second);
+        }
+    }
 };
