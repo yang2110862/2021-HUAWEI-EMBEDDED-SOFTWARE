@@ -1,4 +1,4 @@
-#include "myHead.h"
+#include "myHeap.h"
 
 bool IndexMinPQ::less(int i, int j) {
     if (keys[pq[i]] < keys[pq[j]]) return true;

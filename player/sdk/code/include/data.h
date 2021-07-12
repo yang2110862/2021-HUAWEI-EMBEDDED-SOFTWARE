@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <climits>
 #include <queue>
+#include <stack>
 using namespace std;
 
 using Route = vector<uint32_t>;
@@ -83,42 +84,4 @@ public:
     int getE() {return E;}
     vector<int> getBaseSet() {return base;}
     vector<int> getSatellitSet() {return satellite;}
-};
-
-//最短路径的Dijkstra算法
-class DijkstraSP {
-private:
-    struct cmp_edge_dist{
-        
-    };
-private:
-    vector<Edge*> edgeTo; //由顶点索引的Edge对象的数组，其中edgeTo[v]为连接v和它的父节点的边
-    vector<int> distTo; //distTo[w]是从s到w的最短路径的长度
-    priority_queue<pair<int, int>, vector<pair<int, int>>, 
-        greater<pair<int ,int>>> pq;
-    void relax(EdgeWeightedGraph G, int v) {
-        for (Edge* e : G.getAdj(v)) {
-            int w = e->other(v);
-            if (distTo[w] > distTo[v] + e->getWeight()) {
-                distTo[w] = distTo[v] + e->getWeight();
-                edgeTo[w] = e;
-                // if (pq.)
-            }
-        }
-    }
-public:
-    DijkstraSP(EdgeWeightedGraph G, int s) {
-        edgeTo.resize(G.getV());
-        distTo.resize(G.getV());
-        for (int v = 0; v < G.getV(); ++v) {
-            distTo[v] = INT_MAX;
-        }
-        distTo[s] = 0;
-        pq.push(make_pair(0, s));
-        while (!pq.empty()) {
-            auto temp = pq.top();
-            pq.pop();
-            relax(G, temp.second);
-        }
-    }
 };

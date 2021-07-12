@@ -16,6 +16,7 @@ private:
     void swim(int k);
     void sink(int k);
 public:
+    IndexMinPQ() = default;
     IndexMinPQ(int maxN);
     bool isEmpty() {return N == 0;}
     bool contains(int k) {return qp[k] != -1;}

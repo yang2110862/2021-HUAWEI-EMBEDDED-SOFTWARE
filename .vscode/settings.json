@@ -8,6 +8,12 @@
         "xstddef": "cpp",
         "unordered_set": "cpp",
         "iostream": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "stdexcept": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "xhash": "cpp",
+        "xlocinfo": "cpp",
+        "xutility": "cpp"
     }
 }
