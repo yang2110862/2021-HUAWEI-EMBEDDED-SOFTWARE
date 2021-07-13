@@ -19,7 +19,7 @@ void IndexMinPQ::swim(int k) {
 }
 void IndexMinPQ::sink(int k) {
     while (2 * k <= N) {
-        int j = 2 * j;
+        int j = 2 * k;
         if (j < N && less(j + 1, j)) ++j;
         if (!less(j, k)) break;
         exch(k, j);
