@@ -1,6 +1,6 @@
 #include "graphAlgorithm.h"
 
-void DijkstraSP::relax(EdgeWeightedGraph G, int v) {
+void DijkstraSP::relax(EdgeWeightedGraph& G, int v) {
     for (Edge* e : G.getAdj(v)) {
         if (e->hasUsed) continue;
         int w = e->other(v);
@@ -13,7 +13,7 @@ void DijkstraSP::relax(EdgeWeightedGraph G, int v) {
         }
     }
 }
-DijkstraSP::DijkstraSP(EdgeWeightedGraph G, int s, int D) {
+DijkstraSP::DijkstraSP(EdgeWeightedGraph& G, int s, int D) {
     maxLen = D;
     edgeTo.resize(G.getV());
     distTo.resize(G.getV());
