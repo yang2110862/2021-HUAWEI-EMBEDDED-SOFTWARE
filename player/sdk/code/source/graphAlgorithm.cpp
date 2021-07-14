@@ -3,15 +3,17 @@
 void DijkstraSP::relax(EdgeWeightedGraph G, int v) {
     for (Edge* e : G.getAdj(v)) {
         int w = e->other(v);
-        if (distTo[w] > distTo[v] + e->getWeight()) {
-            distTo[w] = distTo[v] + e->getWeight();
+        int temp = distTo[v] + e->getWeight();
+        if (temp <= maxLen && distTo[w] > temp) {
+            distTo[w] = temp;
             edgeTo[w] = e;
             if (pq.contains(w)) pq.change(w, distTo[w]);
             else pq.insert(w, distTo[w]);
         }
     }
 }
-DijkstraSP::DijkstraSP(EdgeWeightedGraph G, int s) {
+DijkstraSP::DijkstraSP(EdgeWeightedGraph G, int s, int D) {
+    maxLen = D;
     edgeTo.resize(G.getV());
     distTo.resize(G.getV());
     pq = IndexMinPQ(G.getV());
