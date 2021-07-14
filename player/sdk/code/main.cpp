@@ -14,10 +14,21 @@ public:
         EdgeWeightedGraph G(N, E, edgeVec, typeVec);
         vector<int> baseSet = G.getBaseSet();
         vector<int> satelliteSet = G.getSatellitSet();
+        //路径初始化
+        for (int base : baseSet) {
+            Node* node = G.getNode(base);
+            node->next = G.getNode(const_cast<Edge*>(*G.getAdj(base).begin())->other(base));
+        }
+
+        //保存所有路径
         for (int base : baseSet) {
             Route temp;
-            temp.push_back(base);
-            temp.push_back(const_cast<Edge*>(*G.getAdj(base).begin())->other(base));
+            Node* node = G.getNode(base);
+            temp.push_back(node->getNum());
+            while (node->next != nullptr) {
+                node = node->next;
+                temp.push_back(node->getNum());
+            }
             retRouteVec.push_back(temp);
         }
         return retRouteVec;
