@@ -41,50 +41,51 @@ public:
             DijkstraSP dijk(G, head, node->leftDist);
         }
         //自上而下，合并路径
-        // while (true) {
-        //     int targetSatellite;//本轮选到的接收卫星
-        //     unordered_map<int, int> cnt;//记录不同接收卫星所收到的投票
-        //     unordered_map<int, DijkstraSP> mp_dijk;//为了复用已经算过的dijkstra算法
-        //     int maxVoter = 0;//记录最大投票数
-        //     //找到本轮能连接到最多头节点的接受卫星作为本轮的接收卫星
-        //     for (auto head : headSet) {
-        //         Node* node = G.getNode(head);
-        //         DijkstraSP dijk(G, head, node->leftDist);
-        //         mp_dijk[head] = dijk;
-        //         for (auto recSatellite : recSatellite_candidated) {
-        //             if (dijk.hasPathTo(recSatellite)) {
-        //                 ++cnt[recSatellite];
-        //                 if (cnt[recSatellite] > maxVoter) {
-        //                     targetSatellite = recSatellite;
-        //                 }
-        //             }
-        //         }
-        //     } 
-        //     //只有自己给自己投票时，不能再合并
-        //     if (maxVoter == 1) break; 
-        //     //开始合并，并更新点、边、集合的信息
-        //     set<int> deled_head;
-        //     for (auto head : headSet) {
-        //         Node* node = G.getNode(head);
-        //         DijkstraSP dijk = mp_dijk[head];
-        //         //更新路径
-        //         if (dijk.hasPathTo(targetSatellite)) {
-        //             deled_head.insert(head);
-        //             auto route = dijk.pathTo(targetSatellite);
-        //             for (auto edge : route) {
-        //                 Node* next = G.getNode(edge->other(node->getNum()));
-        //                 node->next = next;
-        //                 next->leftDist = node->leftDist - edge->getWeight();
-        //                 edge->hasUsed = true;
-        //                 node = next;
-        //             }
-        //         }
-        //     }
-        //     for (auto node : deled_head) {
-        //         headSet.erase(node);
-        //     }
-        //     headSet.insert(targetSatellite);
-        // }
+        while (true) {
+            int targetSatellite;//本轮选到的接收卫星
+            unordered_map<int, int> cnt;//记录不同接收卫星所收到的投票
+            unordered_map<int, DijkstraSP> mp_dijk;//为了复用已经算过的dijkstra算法
+            int maxVoter = 0;//记录最大投票数
+            //找到本轮能连接到最多头节点的接受卫星作为本轮的接收卫星
+            for (auto head : headSet) {
+                Node* node = G.getNode(head);
+                DijkstraSP dijk(G, head, node->leftDist);
+                mp_dijk[head] = dijk;
+                for (auto recSatellite : recSatellite_candidated) {
+                    if (dijk.hasPathTo(recSatellite)) {
+                        ++cnt[recSatellite];
+                        if (cnt[recSatellite] > maxVoter) {
+                            maxVoter = cnt[recSatellite];
+                            targetSatellite = recSatellite;
+                        }
+                    }
+                }
+            } 
+            //只有自己给自己投票时，不能再合并
+            if (maxVoter == 1) break; 
+            //开始合并，并更新点、边、集合的信息
+            set<int> deled_head;
+            for (auto head : headSet) {
+                Node* node = G.getNode(head);
+                DijkstraSP dijk = mp_dijk[head];
+                //更新路径
+                if (dijk.hasPathTo(targetSatellite)) {
+                    deled_head.insert(head);
+                    auto route = dijk.pathTo(targetSatellite);
+                    for (auto edge : route) {
+                        Node* next = G.getNode(edge->other(node->getNum()));
+                        node->next = next;
+                        next->leftDist = node->leftDist - edge->getWeight();
+                        edge->hasUsed = true;
+                        node = next;
+                    }
+                }
+            }
+            for (auto node : deled_head) {
+                headSet.erase(node);
+            }
+            headSet.insert(targetSatellite);
+        }
 
         //保存所有路径
         for (int base : baseSet) {
