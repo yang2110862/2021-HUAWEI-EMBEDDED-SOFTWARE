@@ -12,12 +12,10 @@ public:
     Node(int x) : x(x) {};
 };
 int main() {
-    vector<int*> test;
-    test.resize(3);
-    if (test[2] == nullptr) {
-        cout << "y";
-    } else {
-        cout << "n";
+    set<int> arr{1,3,5};
+    arr.erase(1);
+    for (auto x : arr) {
+        cout << x;
     }
     return 0;
 }

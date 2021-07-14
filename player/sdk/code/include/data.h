@@ -18,6 +18,7 @@ private:
 public:
     bool isHead = false;
     Node* next = nullptr;
+    int leftDist;
 public:
     Node(int num, bool flag) : num(num), Satellite(flag) {}
     int getNum() {return num;}

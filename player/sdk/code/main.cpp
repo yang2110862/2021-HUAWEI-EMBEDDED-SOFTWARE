@@ -14,10 +14,23 @@ public:
         EdgeWeightedGraph G(N, E, edgeVec, typeVec);
         vector<int> baseSet = G.getBaseSet();
         vector<int> satelliteSet = G.getSatellitSet();
+
+        set<int> headSet;//头节点集合
+        for (int base : baseSet) {
+            headSet.insert(base);
+            G.getNode(base)->leftDist = D;
+        }
         //路径初始化
         for (int base : baseSet) {
-            Node* node = G.getNode(base);
-            node->next = G.getNode(const_cast<Edge*>(*G.getAdj(base).begin())->other(base));
+            Node* node = G.getNode(base); 
+            Edge* edge = const_cast<Edge*>(*G.getAdj(base).begin());
+            Node* next = G.getNode(edge->other(base));
+            node->next = next;
+            //更新点、边、集合信息
+            next->leftDist = node->leftDist - edge->getWeight();
+            edge->hasUsed = true;
+            headSet.erase(base);
+            headSet.insert(next->getNum());
         }
 
         //保存所有路径
