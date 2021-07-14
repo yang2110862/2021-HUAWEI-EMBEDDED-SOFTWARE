@@ -16,6 +16,9 @@ private:
     int num;
     bool Satellite;
 public:
+    bool isHead = false;
+    Node* next = nullptr;
+public:
     Node(int num, bool flag) : num(num), Satellite(flag) {}
     int getNum() {return num;}
     bool isSatellite() {return Satellite;}
@@ -30,6 +33,8 @@ private:
     int v;//顶点之一
     int w;//另一个顶点
     int weight;//边的权重
+public:
+    bool hasUsed = false;//是否已经用过
 public:
     Edge(int v, int w, int weigh);
     int either() {return v;}  //返回边的一个点

@@ -2,6 +2,7 @@
 
 void DijkstraSP::relax(EdgeWeightedGraph G, int v) {
     for (Edge* e : G.getAdj(v)) {
+        if (e->hasUsed) continue;
         int w = e->other(v);
         int temp = distTo[v] + e->getWeight();
         if (temp <= maxLen && distTo[w] > temp) {

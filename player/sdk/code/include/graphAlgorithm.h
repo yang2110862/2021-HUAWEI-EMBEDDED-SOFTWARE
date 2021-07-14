@@ -1,7 +1,7 @@
 #pragma once
 #include "data.h"
 #include "myHeap.h"
-//最短路径的Dijkstra算法
+//最短路径的Dijkstra算法(带距离约束和路径不冲突约束)
 class DijkstraSP {
 private:
     vector<Edge*> edgeTo; //由顶点索引的Edge对象的数组，其中edgeTo[v]为连接v和它的父节点的边
