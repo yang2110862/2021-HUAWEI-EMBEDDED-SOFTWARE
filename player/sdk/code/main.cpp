@@ -11,7 +11,7 @@ public:
                        const vector<bool>& typeVec, const vector<Edge*>& edgeVec)
     {
         vector<Route> retRouteVec;
-        EdgeWeightedGraph G(N, E, edgeVec, typeVec);
+        EdgeWeightedGraph G(N, E, edgeVec, typeVec, D);
         vector<int> baseSet = G.getBaseSet();
         vector<int> satelliteSet = G.getSatellitSet();
 
@@ -52,7 +52,7 @@ public:
                 DijkstraSP dijk(G, head, node->leftDist);
                 mp_dijk[head] = dijk;
                 for (auto recSatellite : recSatellite_candidated) {
-                    if (dijk.hasPathTo(recSatellite)) {
+                    if (dijk.hasPathTo(G, recSatellite)) {
                         ++cnt[recSatellite];
                         if (cnt[recSatellite] > maxVoter) {
                             maxVoter = cnt[recSatellite];
@@ -69,13 +69,13 @@ public:
                 Node* node = G.getNode(head);
                 DijkstraSP dijk = mp_dijk[head];
                 //更新路径
-                if (dijk.hasPathTo(targetSatellite)) {
+                if (dijk.hasPathTo(G, targetSatellite)) {
                     deled_head.insert(head);
                     auto route = dijk.pathTo(targetSatellite);
                     for (auto edge : route) {
                         Node* next = G.getNode(edge->other(node->getNum()));
                         node->next = next;
-                        next->leftDist = node->leftDist - edge->getWeight();
+                        next->leftDist = min(node->leftDist - edge->getWeight(), next->leftDist);
                         edge->hasUsed = true;
                         node = next;
                     }

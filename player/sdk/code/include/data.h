@@ -20,7 +20,7 @@ public:
     Node* next = nullptr;
     int leftDist;
 public:
-    Node(int num, bool flag) : num(num), Satellite(flag) {}
+    Node(int num, bool flag, int D) : num(num), Satellite(flag), leftDist(D) {}
     int getNum() {return num;}
     bool isSatellite() {return Satellite;}
 };
@@ -54,7 +54,7 @@ private:
     vector<int> satellite;
 public:
     EdgeWeightedGraph(int N, int E, const vector<Edge*>& edgeVec, 
-        const vector<bool>& typeVce);
+        const vector<bool>& typeVce, int D);
     Node* getNode(int index) {
         if (mp.count(index)) return mp[index];
         else throw range_error("out of range");

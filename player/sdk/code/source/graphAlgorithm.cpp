@@ -29,7 +29,7 @@ DijkstraSP::DijkstraSP(EdgeWeightedGraph& G, int s, int D) {
 }
 vector<Edge*> DijkstraSP::pathTo(int v) {
     vector<Edge*> route;
-    if (!hasPathTo(v)) return route;
+    if (distTo[v] == INT_MAX) return route;
     stack<Edge*> path;
     int end = v;
     if (edgeTo[v] == nullptr) return route;
@@ -46,4 +46,7 @@ vector<Edge*> DijkstraSP::pathTo(int v) {
         path.pop();
     }
     return route;
+}
+bool DijkstraSP::hasPathTo(EdgeWeightedGraph& G, int v) {
+    
 }

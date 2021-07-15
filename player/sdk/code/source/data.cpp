@@ -17,12 +17,12 @@ int Edge::compareTo(Edge* that) {
 }
 
 
-EdgeWeightedGraph::EdgeWeightedGraph(int N, int E, const vector<Edge*>& edgeVec, const vector<bool>& typeVce) { 
+EdgeWeightedGraph::EdgeWeightedGraph(int N, int E, const vector<Edge*>& edgeVec, const vector<bool>& typeVce, int D) { 
     this->V = N;
     this->E = E;
     adj.resize(N);
     for (int v = 0; v < V; ++v) {
-        Node* node = new Node(v, typeVce[v]);
+        Node* node = new Node(v, typeVce[v], D);
         mp[v] = node;
         if (typeVce[v]) satellite.push_back(v);
         else base.push_back(v);

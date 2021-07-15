@@ -14,6 +14,6 @@ public:
     DijkstraSP() = default;
     DijkstraSP(EdgeWeightedGraph& G, int s, int D);
     int distanceTo(int v) {return distTo[v];} //从顶点s到v的距离，如果不存在则路径为无穷大
-    bool hasPathTo(int v) {return distTo[v] < INT_MAX;}; //是否有从顶点s到v的路径
+    bool hasPathTo(EdgeWeightedGraph& G, int v); //是否有从顶点s到v的路径
     vector<Edge*> pathTo(int v);//从顶点s到v的路径
 };
