@@ -14,7 +14,7 @@ public:
         EdgeWeightedGraph G(N, E, edgeVec, typeVec, D);
         vector<int> baseSet = G.getBaseSet();
         vector<int> satelliteSet = G.getSatellitSet();
-
+        unordered_map<Node*, vector<Node*>> routes;
         set<int> headSet;//头节点集合
         set<int> recSatellite_candidated;//候选接受卫星集合
         for (int base : baseSet) {
@@ -74,6 +74,7 @@ public:
                     auto route = dijk.pathTo(targetSatellite);
                     for (auto edge : route) {
                         Node* next = G.getNode(edge->other(node->getNum()));
+                        routes[node].emplace_back(next);
                         node->next = next;
                         next->leftDist = min(node->leftDist - edge->getWeight(), next->leftDist);
                         edge->hasUsed = true;
@@ -94,6 +95,17 @@ public:
             temp.push_back(node->getNum());
             while (node->next != nullptr) {
                 node = node->next;
+                temp.push_back(node->getNum());
+            }
+            retRouteVec.push_back(temp);
+        }
+        for (int base : baseSet) {
+            Route temp;
+            Node* node = G.getNode(base);
+            temp.push_back(node->getNum());
+            Node* next = node->next;
+            temp.push_back(next->getNum());
+            for (auto node : routes[next]) {
                 temp.push_back(node->getNum());
             }
             retRouteVec.push_back(temp);
