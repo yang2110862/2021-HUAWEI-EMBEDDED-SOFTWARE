@@ -62,7 +62,8 @@ public:
                 }
             } 
             //只有自己给自己投票时，不能再合并
-            if (maxVoter == 1) break; 
+            if (maxVoter == 1 || maxVoter == 0) break;  //头节点全部备选或只有头节点给他自己投票时break
+            recSatellite_candidated.erase(targetSatellite);
             //开始合并，并更新点、边、集合的信息
             set<int> deled_head;
             for (auto head : headSet) {
@@ -89,16 +90,6 @@ public:
         }
 
         //保存所有路径
-        for (int base : baseSet) {
-            Route temp;
-            Node* node = G.getNode(base);
-            temp.push_back(node->getNum());
-            while (node->next != nullptr) {
-                node = node->next;
-                temp.push_back(node->getNum());
-            }
-            retRouteVec.push_back(temp);
-        }
         for (int base : baseSet) {
             Route temp;
             Node* node = G.getNode(base);
