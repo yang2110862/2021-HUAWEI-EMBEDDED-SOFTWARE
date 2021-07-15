@@ -14,6 +14,7 @@ void DijkstraSP::relax(EdgeWeightedGraph& G, int v) {
     }
 }
 DijkstraSP::DijkstraSP(EdgeWeightedGraph& G, int s, int D) {
+    begin = s;
     maxLen = D;
     edgeTo.resize(G.getV());
     distTo.resize(G.getV());
@@ -48,5 +49,18 @@ vector<Edge*> DijkstraSP::pathTo(int v) {
     return route;
 }
 bool DijkstraSP::hasPathTo(EdgeWeightedGraph& G, int v) {
-    
+    auto path = this->pathTo(v);
+    if (this->distanceTo(v) == INT_MAX) return false;
+    int leftDistance = this->maxLen;
+    int n = path.size();
+    if (n == 0) return true;
+    int beg = this->begin;
+    int end = path[0]->other(begin);
+    leftDistance = min(leftDistance - path[0]->getWeight(), G.getNode(end)->leftDist);
+    for (int i = 1; i < n; ++i) {
+        beg = end;
+        end = path[i]->other(beg);
+        leftDistance = min(leftDistance - path[i]->getWeight(), G.getNode(end)->leftDist);
+    }
+    return leftDistance >= 0;
 }

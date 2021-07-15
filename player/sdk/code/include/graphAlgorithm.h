@@ -7,6 +7,7 @@ private:
     vector<Edge*> edgeTo; //由顶点索引的Edge对象的数组，其中edgeTo[v]为连接v和它的父节点的边
     vector<int> distTo; //distTo[w]是从s到w的最短路径的长度
     IndexMinPQ pq;
+    int begin;
     int maxLen;
 private:
     void relax(EdgeWeightedGraph& G, int v);
