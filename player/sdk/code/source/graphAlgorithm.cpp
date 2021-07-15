@@ -32,6 +32,7 @@ vector<Edge*> DijkstraSP::pathTo(int v) {
     if (!hasPathTo(v)) return route;
     stack<Edge*> path;
     int end = v;
+    if (edgeTo[v] == nullptr) return route;
     int beg = edgeTo[v]->other(end);
     for (Edge* e = edgeTo[v]; e != nullptr; e = edgeTo[end]) {
         path.push(e);

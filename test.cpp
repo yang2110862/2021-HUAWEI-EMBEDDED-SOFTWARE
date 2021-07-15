@@ -12,10 +12,7 @@ public:
     Node(int x) : x(x) {};
 };
 int main() {
-    set<int> arr{1,3,5};
-    arr.erase(1);
-    for (auto x : arr) {
-        cout << x;
-    }
+    vector<Node*> node;
+    cout << node.size();
     return 0;
 }
