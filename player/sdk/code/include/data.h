@@ -16,7 +16,6 @@ private:
     int num;
     bool Satellite;
 public:
-    bool isHead = false;
     Node* next = nullptr;
     int leftDist;
 public:

@@ -42,10 +42,6 @@ public:
             headSet.erase(base);
             headSet.insert(next->getNum());
         }
-        for (auto head : headSet) {
-            Node* node = G.getNode(head);
-            DijkstraSP dijk(G, head, node->leftDist);
-        }
         //自上而下，合并路径
         while (true) {
             int targetSatellite;//本轮选到的接收卫星
