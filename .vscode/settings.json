@@ -18,6 +18,7 @@
         "set": "cpp",
         "iterator": "cpp",
         "memory": "cpp",
-        "unordered_map": "cpp"
+        "unordered_map": "cpp",
+        "cmath": "cpp"
     }
 }

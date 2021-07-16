@@ -3,6 +3,8 @@
 #include "graphAlgorithm.h"
 #include "data.h"
 #include "myHeap.h"
+#include <algorithm>
+#include <cmath>
 using namespace std;
 
 class Solution {
@@ -45,17 +47,34 @@ public:
         //自上而下，合并路径
         while (true) {
             int targetSatellite;//本轮选到的接收卫星
-            unordered_map<int, int> cnt;//记录不同接收卫星所收到的投票
+            unordered_map<int, double> cnt;//记录不同接收卫星所收到的投票
             unordered_map<int, DijkstraSP> mp_dijk;//为了复用已经算过的dijkstra算法
-            int maxVoter = 0;//记录最大投票数
+            double maxVoter = 0;//记录最大投票数
             //找到本轮能连接到最多头节点的接受卫星作为本轮的接收卫星
+            for (auto head : headSet) {
+                Node* node = G.getNode(head);
+                DijkstraSP dijk(G, head, node->leftDist);
+                mp_dijk[head] = dijk;
+            }
+            int n_recSatelliteCandidated = recSatellite_candidated.size(); //所有被投票的卫星数量
+            unordered_map<int, int> poll_diffHead;//本轮中不同头节点能投的票数
+            for (auto head : headSet) {
+                int num_canLink = 0;//该头节点能连接到的卫星数
+                DijkstraSP dijk = mp_dijk[head];
+                for (auto recSatellite : recSatellite_candidated) {
+                    if (dijk.hasPathTo(G, recSatellite)) {
+                        ++num_canLink;
+                    }
+                }
+                poll_diffHead[head] = log(1.0 * n_recSatelliteCandidated / num_canLink);
+            }
             for (auto head : headSet) {
                 Node* node = G.getNode(head);
                 DijkstraSP dijk(G, head, node->leftDist);
                 mp_dijk[head] = dijk;
                 for (auto recSatellite : recSatellite_candidated) {
                     if (dijk.hasPathTo(G, recSatellite)) {
-                        ++cnt[recSatellite];
+                        cnt[recSatellite] += poll_diffHead[head];
                         if (cnt[recSatellite] > maxVoter) {
                             maxVoter = cnt[recSatellite];
                             targetSatellite = recSatellite;
@@ -63,8 +82,8 @@ public:
                     }
                 }
             } 
-            //只有自己给自己投票时，不能再合并
-            if (maxVoter == 1 || maxVoter == 0) break;  //头节点全部备选或只有头节点给他自己投票时break
+            //只有自己给自己投票时或全部头节点都已经被选（无人投票了），不能再合并
+            if (maxVoter == log(1.0 * n_recSatelliteCandidated / 1) || maxVoter == 0) break;
             recSatellite_candidated.erase(targetSatellite);
             //开始合并，并更新点、边、集合的信息
             set<int> deled_head;
