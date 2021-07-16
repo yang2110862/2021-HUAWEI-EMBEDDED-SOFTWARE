@@ -95,6 +95,7 @@ public:
         }
 
         //保存所有路径
+        // set<int> stars;
         for (int base : baseSet) {
             Route temp;
             Node* node = G.getNode(base);
@@ -106,8 +107,10 @@ public:
                     temp.push_back(node->getNum());
                 }
             }
+            // stars.insert(*(temp.end() - 1));
             retRouteVec.push_back(temp);
         }
+        // cout << "stars num : " << stars.size() << endl;
         return retRouteVec;
     }
 };
