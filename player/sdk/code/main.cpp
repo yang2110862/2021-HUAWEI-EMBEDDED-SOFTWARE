@@ -27,11 +27,17 @@ public:
         //路径初始化
         for (int base : baseSet) {
             Node* node = G.getNode(base); 
-            Edge* edge = const_cast<Edge*>(*G.getAdj(base).begin());
+            Edge* edge = nullptr;
+            for (auto e : G.getAdj(base)) { //任意找一个满足要求的基站
+                if (e->getWeight() <= D) {
+                    edge = e;
+                    break;
+                }
+            }
             Node* next = G.getNode(edge->other(base));
             node->next = next;
             //更新点、边、集合信息
-            next->leftDist = node->leftDist - edge->getWeight();
+            next->leftDist = min(node->leftDist - edge->getWeight(), next->leftDist);
             edge->hasUsed = true;
             headSet.erase(base);
             headSet.insert(next->getNum());
