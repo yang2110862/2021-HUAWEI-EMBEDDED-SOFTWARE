@@ -66,15 +66,18 @@ public:
             recSatellite_candidated.erase(targetSatellite);
             //开始合并，并更新点、边、集合的信息
             set<int> deled_head;
+            set<int> deled_recCandidated;
             for (auto head : headSet) {
                 Node* node = G.getNode(head);
                 DijkstraSP dijk = mp_dijk[head];
                 //更新路径
                 if (dijk.hasPathTo(G, targetSatellite)) {
                     deled_head.insert(head);
+                    deled_recCandidated.insert(head);
                     auto route = dijk.pathTo(targetSatellite);
                     for (auto edge : route) {
                         Node* next = G.getNode(edge->other(node->getNum()));
+                        deled_recCandidated.insert(next->getNum());
                         routes[head].emplace_back(next);
                         node->next = next;
                         next->leftDist = min(node->leftDist - edge->getWeight(), next->leftDist);
@@ -86,7 +89,9 @@ public:
             for (auto node : deled_head) {
                 headSet.erase(node);
             }
-            headSet.insert(targetSatellite);
+            for (auto node : deled_recCandidated) {
+                recSatellite_candidated.erase(node);
+            }
         }
 
         //保存所有路径
