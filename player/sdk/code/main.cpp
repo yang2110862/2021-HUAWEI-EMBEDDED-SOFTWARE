@@ -47,9 +47,15 @@ public:
         //自上而下，合并路径
         while (true) {
             int targetSatellite;//本轮选到的接收卫星
+            for (auto satellite : recSatellite_candidated) {  //保证targetSatellite有确切值
+                targetSatellite = satellite;
+                break;
+            }
             unordered_map<int, double> cnt;//记录不同接收卫星所收到的投票
+            unordered_map<int, int> numMax_voter;//投票给该卫星的头节点数，以判断何时跳出循环
             unordered_map<int, DijkstraSP> mp_dijk;//为了复用已经算过的dijkstra算法
             double maxVoter = 0;//记录最大投票数
+            int maxNum_voter = 0;//投票的最大人数
             //找到本轮能连接到最多头节点的接受卫星作为本轮的接收卫星
             for (auto head : headSet) {
                 Node* node = G.getNode(head);
@@ -73,6 +79,8 @@ public:
                 DijkstraSP dijk = mp_dijk[head];
                 for (auto recSatellite : recSatellite_candidated) {
                     if (dijk.hasPathTo(G, recSatellite)) {
+                        ++numMax_voter[recSatellite];
+                        maxNum_voter = max(maxNum_voter, numMax_voter[recSatellite]);
                         cnt[recSatellite] += poll_diffHead[head];
                         if (cnt[recSatellite] > maxVoter) {
                             maxVoter = cnt[recSatellite];
@@ -82,7 +90,7 @@ public:
                 }
             } 
             //只有自己给自己投票时或全部头节点都已经被选（无人投票了），不能再合并
-            if (maxVoter == log(1.0 * n_recSatelliteCandidated / 1) || maxVoter == 0) break;
+            if (maxNum_voter == 1 || maxNum_voter == 0) break;
             recSatellite_candidated.erase(targetSatellite);
             //开始合并，并更新点、边、集合的信息
             set<int> deled_head;
@@ -113,7 +121,7 @@ public:
                 recSatellite_candidated.erase(node);
             }
         }
-        
+
         //保存所有路径
         // set<int> stars;
         for (int base : baseSet) {
