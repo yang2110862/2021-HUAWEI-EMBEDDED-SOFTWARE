@@ -83,8 +83,13 @@ public:
                     if (dijk.hasPathTo(G, recSatellite)) {
                         ++numMax_voter[recSatellite];
                         maxNum_voter = max(maxNum_voter, numMax_voter[recSatellite]);
-                        reward[recSatellite] += poll_diffHead[head];
-                        if (reward[recSatellite] > maxReward) {
+                        // reward[recSatellite] += poll_diffHead[head];
+                        // if (reward[recSatellite] > maxReward) {
+                        //     maxReward = reward[recSatellite];
+                        //     targetSatellite = recSatellite;
+                        // }
+                        ++reward[recSatellite];
+                        if (reward[recSatellite] > maxReward) {  //base计票法
                             maxReward = reward[recSatellite];
                             targetSatellite = recSatellite;
                         }
