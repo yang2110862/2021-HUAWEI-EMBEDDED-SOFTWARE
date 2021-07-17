@@ -1,4 +1,6 @@
-E:/github/2021-HUAWEI-EMBEDDED-SOFTWARE/player/sdk/build/CMakeFiles/Embedded-2021.dir
-E:/github/2021-HUAWEI-EMBEDDED-SOFTWARE/player/sdk/build/CMakeFiles/ALL_BUILD.dir
-E:/github/2021-HUAWEI-EMBEDDED-SOFTWARE/player/sdk/build/CMakeFiles/ZERO_CHECK.dir
-E:/github/2021-HUAWEI-EMBEDDED-SOFTWARE/player/sdk/build/source/CMakeFiles/source-objects.dir
+/home/seanyang/github/2021-HUAWEI-EMBEDDED-SOFTWARE/player/sdk/build/CMakeFiles/rebuild_cache.dir
+/home/seanyang/github/2021-HUAWEI-EMBEDDED-SOFTWARE/player/sdk/build/CMakeFiles/edit_cache.dir
+/home/seanyang/github/2021-HUAWEI-EMBEDDED-SOFTWARE/player/sdk/build/CMakeFiles/Embedded-2021.dir
+/home/seanyang/github/2021-HUAWEI-EMBEDDED-SOFTWARE/player/sdk/build/source/CMakeFiles/rebuild_cache.dir
+/home/seanyang/github/2021-HUAWEI-EMBEDDED-SOFTWARE/player/sdk/build/source/CMakeFiles/edit_cache.dir
+/home/seanyang/github/2021-HUAWEI-EMBEDDED-SOFTWARE/player/sdk/build/source/CMakeFiles/source-objects.dir

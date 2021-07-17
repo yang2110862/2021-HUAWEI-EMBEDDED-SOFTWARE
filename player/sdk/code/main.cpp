@@ -5,8 +5,8 @@
 #include "myHeap.h"
 #include <algorithm>
 #include <cmath>
+#include <fstream>
 using namespace std;
-
 class Solution {
 public:
     vector<Route> Plan(uint32_t N, uint32_t E, uint32_t C, uint32_t D, uint32_t PS,
@@ -70,8 +70,7 @@ public:
             }
             for (auto head : headSet) {
                 Node* node = G.getNode(head);
-                DijkstraSP dijk(G, head, node->leftDist);
-                mp_dijk[head] = dijk;
+                DijkstraSP dijk = mp_dijk[head];
                 for (auto recSatellite : recSatellite_candidated) {
                     if (dijk.hasPathTo(G, recSatellite)) {
                         cnt[recSatellite] += poll_diffHead[head];
@@ -114,7 +113,7 @@ public:
                 recSatellite_candidated.erase(node);
             }
         }
-
+        
         //保存所有路径
         // set<int> stars;
         for (int base : baseSet) {
@@ -145,7 +144,6 @@ int main(int argc, char *argv[])
     vector<bool> typeVec;   // 下标为i的值代表ID为i的站点身份，卫星为true，发射基站为false
     // vector<Edge> edgeVec;   // 包含E条边
     vector<Edge*> edgeVec;
-
     cin >> N >> E >> C >> D >> PS;
     typeVec = vector<bool>(N);
     for (uint32_t i = 0; i < N; i++) {

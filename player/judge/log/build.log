@@ -1,32 +1,31 @@
-cmake version 3.20.4
+cmake version 3.16.3
 
 CMake suite maintained and supported by Kitware (kitware.com/cmake).
--- Building for: Visual Studio 16 2019
-CMake Deprecation Warning at CMakeLists.txt:2 (cmake_minimum_required):
-  Compatibility with CMake < 2.8.12 will be removed from a future version of
-  CMake.
-
-  Update the VERSION argument <min> value or use a ...<max> suffix to tell
-  CMake that the project does not need compatibility with older versions.
-
-
--- Selecting Windows SDK version 10.0.18362.0 to target Windows 10.0.19041.
--- The C compiler identification is MSVC 19.27.29112.0
--- The CXX compiler identification is MSVC 19.27.29112.0
+-- The C compiler identification is GNU 9.3.0
+-- The CXX compiler identification is GNU 9.3.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
--- Check for working C compiler: D:/VS2019_1/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64/cl.exe - skipped
 -- Detecting C compile features
 -- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
 -- Detecting CXX compiler ABI info
 -- Detecting CXX compiler ABI info - done
--- Check for working CXX compiler: D:/VS2019_1/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64/cl.exe - skipped
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: E:/github/2021-HUAWEI-EMBEDDED-SOFTWARE/player/sdk/build
+-- Build files have been written to: /home/seanyang/github/2021-HUAWEI-EMBEDDED-SOFTWARE/player/sdk/build
 cmake return: 0
-make: *** No targets specified and no makefile found.  Stop.
-make return: 2
-make <>return: 2
+Scanning dependencies of target source-objects
+[ 20%] Building CXX object source/CMakeFiles/source-objects.dir/data.cpp.o
+[ 40%] Building CXX object source/CMakeFiles/source-objects.dir/graphAlgorithm.cpp.o
+[ 60%] Building CXX object source/CMakeFiles/source-objects.dir/myHeap.cpp.o
+[ 60%] Built target source-objects
+Scanning dependencies of target Embedded-2021
+[ 80%] Building CXX object CMakeFiles/Embedded-2021.dir/main.cpp.o
+[100%] Linking CXX executable /home/seanyang/github/2021-HUAWEI-EMBEDDED-SOFTWARE/player/sdk/bin/Embedded-2021
+[100%] Built target Embedded-2021
+make return: 0
