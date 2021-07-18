@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/Embedded-2021.dir/main.cpp.o source/CMakeFiles/source-objects.dir/data.cpp.o source/CMakeFiles/source-objects.dir/graphAlgorithm.cpp.o source/CMakeFiles/source-objects.dir/myHeap.cpp.o  -o /home/seanyang/github/2021-HUAWEI-EMBEDDED-SOFTWARE/2021华为嵌入式大赛算法组复赛选手必备包/player/sdk/bin/Embedded-2021 
