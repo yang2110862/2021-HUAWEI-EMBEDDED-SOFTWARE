@@ -19,6 +19,8 @@
         "iterator": "cpp",
         "memory": "cpp",
         "unordered_map": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "*.tcc": "cpp",
+        "fstream": "cpp"
     }
 }
