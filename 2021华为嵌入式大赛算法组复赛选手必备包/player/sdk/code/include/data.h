@@ -18,8 +18,10 @@ private:
 public:
     Node* next = nullptr;
     int leftDist;
+    int Csite;
+    long cost = 0;
 public:
-    Node(int num, bool flag, int D) : num(num), Satellite(flag), leftDist(D) {}
+    Node(int num, bool flag, int D, int Csite) : num(num), Satellite(flag), leftDist(D), Csite(Csite) {}
     int getNum() {return num;}
     bool isSatellite() {return Satellite;}
 };
@@ -53,7 +55,7 @@ private:
     vector<int> satellite;
 public:
     EdgeWeightedGraph(int N, int E, const vector<Edge*>& edgeVec, 
-        const vector<bool>& typeVce, int D);
+        const vector<bool>& typeVce, int D, const vector<int>& Csite);
     Node* getNode(int index) {
         if (mp.count(index)) return mp[index];
         else throw range_error("out of range");
