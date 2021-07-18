@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cmath>
 #include <fstream>
+#include <cfloat>
 using namespace std;
 class Solution {
 public:
@@ -20,6 +21,12 @@ public:
         set<int> headSet;//头节点集合
         set<int> recSatellite_candidated;//候选接受卫星集合
         for (int base : baseSet) {
+            G.getNode(base)->link_number = G.getAdj(base).size();
+        }
+        for (int base : satelliteSet) {
+            G.getNode(base)->link_number = G.getAdj(base).size();
+        }
+        for (int base : baseSet) {
             headSet.insert(base);
             G.getNode(base)->leftDist = D;
         }
@@ -30,10 +37,14 @@ public:
         for (int base : baseSet) {
             Node* node = G.getNode(base); 
             Edge* edge = nullptr;
+            int lenll = INT_MAX;
             for (auto e : G.getAdj(base)) { //任意找一个满足要求的基站
                 if (e->getWeight() <= D) {
-                    edge = e;
-                    break;
+                    if (e->getWeight() < lenll) {
+                        edge = e;
+                        lenll = e->getWeight();
+                    }
+                    // break;
                 }
             }
             Node* next = G.getNode(edge->other(base));
@@ -61,15 +72,19 @@ public:
                 DijkstraSP dijk(G, head, node->leftDist);
                 mp_dijk[head] = dijk;
             }
-            long maxReward = 0;
+            long maxReward = DBL_MIN;
             int candi_numVoter = 0;
+            int head_localCsite;
+            int head_Csite;
             for (auto recSatellite : recSatellite_candidated) {
                 long inc_reward = 0;
                 int local_maxNum_voter = 0;
+                head_localCsite = 0;
                 for (auto head : headSet) {
                     if (mp_dijk[head].hasPathTo(G, recSatellite)) {
                         ++local_maxNum_voter;
                         inc_reward += PS - G.getNode(head)->Csite * mp_dijk[head].distanceTo(recSatellite) * C;
+                        head_localCsite += G.getNode(head)->Csite;
                         // ++inc_reward;
                     }
                 }
@@ -78,12 +93,14 @@ public:
                     candi_numVoter = local_maxNum_voter;
                     maxReward = inc_reward;
                     targetSatellite = recSatellite;
+                    head_Csite = head_localCsite;
                 }
                 if (inc_reward == maxReward) {
                     if (local_maxNum_voter < candi_numVoter) {
                         candi_numVoter = local_maxNum_voter;
                         maxReward = inc_reward;
                         targetSatellite = recSatellite;
+                        head_Csite = head_localCsite;
                     }
                 }
             }
@@ -118,6 +135,7 @@ public:
             for (auto node : deled_recCandidated) {
                 recSatellite_candidated.erase(node);
             }
+            G.getNode(targetSatellite)->Csite = head_localCsite;
             headSet.insert(targetSatellite);
             recSatellite_candidated.insert(targetSatellite);
         }

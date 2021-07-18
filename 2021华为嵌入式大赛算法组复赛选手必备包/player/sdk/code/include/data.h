@@ -20,6 +20,7 @@ public:
     int leftDist;
     int Csite;
     long cost = 0;
+    int link_number;
 public:
     Node(int num, bool flag, int D, int Csite) : num(num), Satellite(flag), leftDist(D), Csite(Csite) {}
     int getNum() {return num;}
