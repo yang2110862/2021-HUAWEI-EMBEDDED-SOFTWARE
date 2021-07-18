@@ -5,10 +5,9 @@
 #include "myHeap.h"
 #include <algorithm>
 #include <cmath>
-#include <fstream>
-#include <climits>
-#include <cfloat>
+#include <unordered_set>
 using namespace std;
+
 class Solution {
 public:
     vector<Route> Plan(uint32_t N, uint32_t E, uint32_t C, uint32_t D, uint32_t PS,
@@ -46,18 +45,19 @@ public:
             headSet.erase(base);
             headSet.insert(next->getNum());
         }
+        int mask=-1;
         //自上而下，合并路径
         while (true) {
             int targetSatellite;//本轮选到的接收卫星
-            for (auto satellite : recSatellite_candidated) {  //保证targetSatellite有确切值
-                targetSatellite = satellite;
-                break;
-            }
-            unordered_map<int, double> reward;//记录不同接收卫星的reward
-            unordered_map<int, int> numMax_voter;//投票给该卫星的头节点数，以判断何时跳出循环
+            unordered_map<int, double> cnt;//记录不同接收卫星所收到的投票
+            unordered_map<int, double> cnt2;//记录不同接收卫星所收到的投票
+            unordered_map<int, int> voteNum;//记录不同接收卫星所收到的投票
+            unordered_map<int, unordered_set<Edge*>> pathUsed;
+            unordered_map<Edge*, unordered_set<int>> path2Head;
             unordered_map<int, DijkstraSP> mp_dijk;//为了复用已经算过的dijkstra算法
-            double maxReward = DBL_MIN;//记录最大投票数
-            int maxNum_voter = 0;//投票的最大人数
+            double maxVoter = -INT_MAX;//记录最大投票数
+            double maxVoter2 = -INT_MAX;//记录最大投票数
+            int maxVoterNum = 0;
             //找到本轮能连接到最多头节点的接受卫星作为本轮的接收卫星
             for (auto head : headSet) {
                 Node* node = G.getNode(head);
@@ -65,63 +65,123 @@ public:
                 mp_dijk[head] = dijk;
             }
             int n_recSatelliteCandidated = recSatellite_candidated.size(); //所有被投票的卫星数量
-            unordered_map<int, int> reward_diffHead;//本轮中不同头节点能贡献的不同reward
-            //找本轮的接收卫星target
-            for (auto recSatellite : recSatellite_candidated) {
-                int num_canLink = 0;
-                int total_disance = 0;
-                for (auto head : headSet) {
-                    Node* node = G.getNode(head);
-                    if (mp_dijk[head].hasPathTo(G, recSatellite)) {
-                        //计算给不同接收卫星投票的头节点数
-                        ++numMax_voter[recSatellite];
-                        maxNum_voter = max(maxNum_voter, numMax_voter[recSatellite]);
-                        //计算reward的参数
+            unordered_map<int, int> poll_diffHead;//本轮中不同头节点能投的票数
+            for (auto head : headSet) {
+                int num_canLink = 0;//该头节点能连接到的卫星数
+                DijkstraSP dijk = mp_dijk[head];
+                for (auto recSatellite : recSatellite_candidated) {
+                    if (dijk.hasPathTo(G, recSatellite)) {
                         ++num_canLink;
-                        total_disance += mp_dijk[head].distanceTo(recSatellite);
                     }
                 }
-                if (total_disance == 0) continue; //没别的头节点可以连接到该卫星，continue
-                // double reward = -1.0 * total_disance / num_canLink / num_canLink;
-                double reward = num_canLink;
-                if (reward > maxReward) {
-                    maxReward = reward;
-                    targetSatellite = recSatellite;
-                }
+                poll_diffHead[head] = log(1.0 * n_recSatelliteCandidated / (num_canLink+1));
             }
-            // for (auto head : headSet) {
-            //     Node* node = G.getNode(head);
-            //     DijkstraSP* dijk = mp_dijk[head];
-            //     for (auto recSatellite : recSatellite_candidated) {
-            //         if (dijk->hasPathTo(G, recSatellite)) {
-            //             ++numMax_voter[recSatellite];
-            //             maxNum_voter = max(maxNum_voter, numMax_voter[recSatellite]);
-            //             // reward[recSatellite] += reward_diffHead[head];
-            //             // if (reward[recSatellite] > maxReward) {
-            //             //     maxReward = reward[recSatellite];
-            //             //     targetSatellite = recSatellite;
-            //             // }
-            //             ++reward[recSatellite];
-            //             if (reward[recSatellite] > maxReward) {  //base计票法
-            //                 maxReward = reward[recSatellite];
-            //                 targetSatellite = recSatellite;
-            //             }
-            //         }
-            //     }
-            // } 
-            //只有自己给自己投票时或全部头节点都已经被选（无人投票了），不能再合并
-            if (maxNum_voter == 1 || maxNum_voter == 0) break;
-            recSatellite_candidated.erase(targetSatellite);
-            //开始合并，并更新点、边、集合的信息
-            set<int> deled_head;
-            set<int> deled_recCandidated;
+
             for (auto head : headSet) {
                 Node* node = G.getNode(head);
+                DijkstraSP dijk(G, head, node->leftDist);
+                mp_dijk[head] = dijk;
+                for (auto recSatellite : recSatellite_candidated) {
+                    if (dijk.hasPathTo(G, recSatellite)&&head!=recSatellite) {
+                        //head recSatellite
+                        float dist=dijk.distanceTo(recSatellite);
+                        vector<Edge*> routeUsed=dijk.pathTo(recSatellite);
+                        int numEdge=routeUsed.size();
+                        pathUsed[recSatellite].insert(routeUsed.begin(),routeUsed.end());
+                        for(Edge* e:routeUsed){
+                            path2Head[e].insert(head);
+                        }
+                        cnt[recSatellite] +=1;
+                        voteNum[recSatellite]+=1;
+
+                        cnt2[recSatellite] += -dist;//70
+                        // cnt2[recSatellite] += -dist/numEdge;//70
+                        // cnt2[recSatellite] += (PS-dist*C);//56
+                        // cnt[recSatellite] += (PS-dist*C)*poll_diffHead[head];//log(N/C)57
+                        // cnt[recSatellite] += PS*poll_diffHead[head]-dist*C;//57
+                    }
+                    // if (cnt[recSatellite] > maxVoter) {
+                    //     maxVoter = cnt[recSatellite];
+                    //     targetSatellite = recSatellite;
+                    // }
+                    // if (voteNum[recSatellite]>maxVoterNum){
+                    //     maxVoterNum=voteNum[recSatellite];
+                    // }
+                }
+            }
+
+            for (auto recSatellite : recSatellite_candidated){
+                // cnt[recSatellite]=cnt[recSatellite]/(pathUsed[recSatellite].size()+1);
+                if (cnt[recSatellite] > maxVoter) {
+                    maxVoter = cnt[recSatellite];
+                    targetSatellite = recSatellite;
+                }else if(cnt[recSatellite] == maxVoter){
+                    // if(cnt2[recSatellite]>cnt2[targetSatellite]){
+                    if(pathUsed[recSatellite].size()<pathUsed[targetSatellite].size()){
+                        targetSatellite = recSatellite;
+                    }
+                }
+                if (voteNum[recSatellite]>maxVoterNum){
+                    maxVoterNum=voteNum[recSatellite];
+                }
+            }
+
+            #ifdef DEBUG
+            cout << "targetSatellite : " << targetSatellite<<" merge:"<<voteNum[targetSatellite];
+            #endif
+            
+            //只有自己给自己投票时或全部头节点都已经被选（无人投票了），不能再合并
+            if (maxVoterNum == 1 || maxVoterNum == 0) break;
+            // if ( maxVoter == -INT_MAX) break;
+            recSatellite_candidated.erase(targetSatellite);
+            //开始合并，并更新点、边、集合的信息
+            unordered_set<int> headsTarget;
+            unordered_set<int> headsNoTarget;
+            unordered_set<int> deled_head;
+            unordered_set<int> deled_recCandidated;
+
+            // for(auto head : headSet){
+            //     Node* node = G.getNode(head);
+            //     DijkstraSP dijk = mp_dijk[head];
+            //     //更新路径
+            //     if (dijk.hasPathTo(G, targetSatellite)){
+            //         headsTarget.insert(head);
+            //     }
+            // }
+
+            // deled_head=headsTarget;
+            // for(Edge* e:pathUsed[targetSatellite]){
+            //     int tmpa=0;
+            //     int tmpb=0;
+            //     unordered_set<int> tmp;
+            //     for(auto h:path2Head[e]){
+            //         if(headsTarget.count(h)!=0){
+            //             tmpa++;
+            //             tmp.insert(h);
+            //         }else{
+            //             tmpb++;
+            //         }
+            //     }
+            //     if(tmpa<tmpb){
+            //         for(auto h:tmp){
+            //             deled_head.erase(h);
+            //         }
+            //     }
+            // }
+
+            #ifdef DEBUG
+            cout << " deled_head : " << deled_head.size()<< endl;
+            #endif
+
+
+            for (auto head : headSet) {
+                Node* node = G.getNode(head);
+                DijkstraSP dijk = mp_dijk[head];
                 //更新路径
-                if (mp_dijk[head].hasPathTo(G, targetSatellite)) {
+                if (dijk.hasPathTo(G, targetSatellite)) {
                     deled_head.insert(head);
                     deled_recCandidated.insert(head);
-                    auto route = mp_dijk[head].pathTo(targetSatellite);
+                    auto route = dijk.pathTo(targetSatellite);
                     for (auto edge : route) {
                         Node* next = G.getNode(edge->other(node->getNum()));
                         deled_recCandidated.insert(next->getNum());
@@ -136,13 +196,15 @@ public:
             for (auto node : deled_head) {
                 headSet.erase(node);
             }
+            headSet.insert(targetSatellite);
             for (auto node : deled_recCandidated) {
                 recSatellite_candidated.erase(node);
             }
+            // recSatellite_candidated.insert(targetSatellite);
         }
 
         //保存所有路径
-        // set<int> stars;
+        set<int> stars;
         for (int base : baseSet) {
             Route temp;
             Node* node = G.getNode(base);
@@ -154,10 +216,12 @@ public:
                     temp.push_back(node->getNum());
                 }
             }
-            // stars.insert(*(temp.end() - 1));
+            stars.insert(*(temp.end() - 1));
             retRouteVec.push_back(temp);
         }
-        // cout << "stars num : " << stars.size() << endl;
+        #ifdef DEBUG
+        cout << "stars num : " << stars.size() << endl;
+        #endif
         return retRouteVec;
     }
 };
@@ -171,6 +235,17 @@ int main(int argc, char *argv[])
     vector<bool> typeVec;   // 下标为i的值代表ID为i的站点身份，卫星为true，发射基站为false
     // vector<Edge> edgeVec;   // 包含E条边
     vector<Edge*> edgeVec;
+
+    #ifdef DEBUG
+	constexpr char file_train_path[] = "../../judge/cases/TestData_24.case";
+    FILE* file_read = freopen(file_train_path, "r", stdin);
+	if (file_read == NULL) {
+		cout << "file read error" << endl;
+		while (true);
+	}
+    #endif
+
+
     cin >> N >> E >> C >> D >> PS;
     typeVec = vector<bool>(N);
     for (uint32_t i = 0; i < N; i++) {
@@ -194,3 +269,5 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
+
+//g++ -D DEBUG main.cpp ./source/data.cpp ./source/graphAlgorithm.cpp ./source/myHeap.cpp  -I ./include -o main.exe
